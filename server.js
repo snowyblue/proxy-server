@@ -31,6 +31,7 @@ const server = http.createServer((req, res) => {
   //   }
 
   console.log("forwarding to backend");
+  console.log(req.url);
   // Forward the request to the backend web server
   proxy.web(req, res, {
     target: "https://messaging-auth-backend.onrender.com" + req.url,
