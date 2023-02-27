@@ -19,12 +19,20 @@ const server = http.createServer((req, res) => {
   console.log(res);
   console.log("forwarding to backend");
   // Forward the request to the backend web server
-  proxy.web(req, res, {
-    target: "https://messaging-auth-backend.onrender.com" + req.url,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-    },
-  });
+  proxy
+    .web(req, res, {
+      target: "https://messaging-auth-backend.onrender.com/" + req.url,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+      },
+    })
+    .on("error", (err) => {
+      console.error(`Error proxying request: ${err.message}`);
+      res.writeHead(500, {
+        "Content-Type": "text/plain",
+      });
+      res.end("Error proxying request");
+    });
 });
 
 // Start the server
