@@ -1,5 +1,6 @@
 const http = require("http");
 const httpProxy = require("http-proxy");
+const url = require("url");
 
 // Create a whitelist of allowed IP addresses
 const whitelist = [
@@ -14,25 +15,25 @@ const proxy = httpProxy.createProxyServer({});
 
 // Create a HTTP server that will listen on a port
 const server = http.createServer((req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Origin", "https://chirp.ddns.net");
   console.log(res);
 
-  // Check if the incoming request is from an allowed IP address
-  const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-  console.log(req.socket.remoteAddress);
-  console.log(req.headers["x-forwarded-for"]);
-  console.log("ip: " + ip);
-  if (!whitelist.includes(ip)) {
-    res.statusCode = 403;
-    console.log("access denied");
-    res.end("Access Denied");
-    return;
-  }
+  // Check if the incoming request is from an allowed IP address of a client/browser
+  //   const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+  //   console.log(req.socket.remoteAddress);
+  //   console.log(req.headers["x-forwarded-for"]);
+  //   console.log("ip: " + ip);
+  //   if (!whitelist.includes(ip)) {
+  //     res.statusCode = 403;
+  //     console.log("access denied");
+  //     res.end("Access Denied");
+  //     return;
+  //   }
 
   console.log("forwarding to backend");
   // Forward the request to the backend web server
   proxy.web(req, res, {
-    target: "https://messaging-auth-backend.onrender.com",
+    target: "https://messaging-auth-backend.onrender.com" + req.url,
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
