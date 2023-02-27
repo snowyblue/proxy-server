@@ -17,21 +17,7 @@ const proxy = httpProxy.createProxyServer({});
 const server = http.createServer((req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "https://chirp.ddns.net");
   console.log(res);
-
-  // Check if the incoming request is from an allowed IP address of a client/browser
-  //   const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-  //   console.log(req.socket.remoteAddress);
-  //   console.log(req.headers["x-forwarded-for"]);
-  //   console.log("ip: " + ip);
-  //   if (!whitelist.includes(ip)) {
-  //     res.statusCode = 403;
-  //     console.log("access denied");
-  //     res.end("Access Denied");
-  //     return;
-  //   }
-
   console.log("forwarding to backend");
-  console.log(req.url);
   // Forward the request to the backend web server
   proxy.web(req, res, {
     target: "https://messaging-auth-backend.onrender.com" + req.url,
