@@ -2,13 +2,21 @@ const http = require("http");
 const httpProxy = require("http-proxy");
 
 // Create a whitelist of allowed IP addresses
-const whitelist = ["52.41.36.82", "54.191.253.12", "44.226.122.3"];
+const whitelist = [
+  process.env.WHITELIST_IP1,
+  process.env.WHITELIST_IP2,
+  process.env.WHITELIST_IP3,
+];
+// const whitelist = ["52.41.36.82", "54.191.253.12", "44.226.122.3"];
 
 // Create a proxy server instance
 const proxy = httpProxy.createProxyServer({});
 
 // Create a HTTP server that will listen on a port
 const server = http.createServer((req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  console.log(res);
+
   // Check if the incoming request is from an allowed IP address
   const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
   console.log(req.socket.remoteAddress);
@@ -25,6 +33,9 @@ const server = http.createServer((req, res) => {
   // Forward the request to the backend web server
   proxy.web(req, res, {
     target: "https://messaging-auth-backend.onrender.com",
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
   });
 });
 
